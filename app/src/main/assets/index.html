@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>D4AI</title>
+<style>
+  :root { --navy:#0b1b3a; --blue:#2563eb; --card:#122447; --text:#e2e8f0; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,sans-serif; background:var(--navy); color:var(--text); height:100vh; display:flex; flex-direction:column; }
+  header { padding:14px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(255,255,255,.08); }
+  header .logo { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#3b82f6,#1d4ed8); display:grid; place-items:center; font-weight:800; }
+  header h1 { font-size:16px; margin:0; }
+  header p { margin:0; font-size:11px; color:#94a3b8; }
+  #msgs { flex:1; overflow:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .bubble { max-width:88%; padding:10px 12px; border-radius:14px; line-height:1.45; font-size:14px; white-space:pre-wrap; }
+  .ai { align-self:flex-start; background:var(--card); }
+  .me { align-self:flex-end; background:var(--blue); }
+  .composer { display:flex; gap:8px; padding:10px 12px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid rgba(255,255,255,.08); background:#0a1730; }
+  .composer input { flex:1; border:0; border-radius:12px; padding:12px 14px; background:#1a2f55; color:#fff; outline:none; }
+  .composer button { border:0; border-radius:12px; padding:0 16px; background:var(--blue); color:#fff; font-weight:600; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">D4</div>
+  <div>
+    <h1>D4AI</h1>
+    <p>Creating Solution, Innovating Lives</p>
+  </div>
+</header>
+<div id="msgs"></div>
+<div class="composer">
+  <input id="inp" placeholder="Message D4AI..." autocomplete="off"/>
+  <button id="send">Send</button>
+</div>
+<script>
+const msgs = document.getElementById('msgs');
+const inp = document.getElementById('inp');
+function add(role, text) {
+  const d = document.createElement('div');
+  d.className = 'bubble ' + (role === 'me' ? 'me' : 'ai');
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+add('ai', 'Hi — I am D4AI, your personal assistant. Ask me anything.');
+async function reply(q) {
+  add('me', q);
+  const thinking = document.createElement('div');
+  thinking.className = 'bubble ai';
+  thinking.textContent = 'Thinking…';
+  msgs.appendChild(thinking);
+  try {
+    const url = 'https://text.pollinations.ai/' + encodeURIComponent(
+      'You are D4AI by D4TECH (Amurun Destiny). Motto: Creating Solution, Innovating Lives. Be helpful, detailed, friendly. User: ' + q
+    );
+    const r = await fetch(url);
+    const t = await r.text();
+    thinking.textContent = t || 'I could not get a reply. Try again.';
+  } catch (e) {
+    thinking.textContent = 'Offline or network error. Connect to the internet and try again.';
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+document.getElementById('send').onclick = () => {
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  reply(q);
+};
+inp.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('send').click(); });
+</script>
+</body>
+</html>

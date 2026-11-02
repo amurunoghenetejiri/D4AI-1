@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/d4_navy</item>
+        <item name="colorPrimary">@color/d4_navy</item>
+        <item name="android:statusBarColor">@color/d4_navy</item>
+        <item name="android:navigationBarColor">@color/d4_navy</item>
+    </style>
+    <style name="AppTheme.Full" parent="AppTheme">
+        <item name="android:windowFullscreen">false</item>
+    </style>
+</resources>
